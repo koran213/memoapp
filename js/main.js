@@ -2,13 +2,25 @@
 const addBtn = document.getElementById('add')
 
 // ローカルストレージからデータを取得する
-// const notes = JSON.parse(localStorage.getItem('notes'))
-const notes = JSON.parse(localStorage.getItem('notes'))
+
+const notes = []
+
+//3.ページ読み込み：保存データ取得表示
+for(let i=0; i<localStorage.length; i++){
+    const key   = localStorage.key(i);
+    const value = localStorage.getItem(key);
+    notes.push(key)
+    const html = '<tr><th>'+key+'</th><td>'+value+'</td></tr>';
+    $("#list").append(html);
+}
+console.log(notes);
 
 // メモ帳追加処理を実行
 if(notes) {
   notes.forEach(note => addNewNote(note))
 }
+
+
 
 // 作成ボタンのクリックイベントの登録
 addBtn.addEventListener('click', () => addNewNote())
