@@ -2,8 +2,9 @@
 const addBtn = document.getElementById('add')
 
 // ローカルストレージからデータを取得する
+// const notes = JSON.parse(localStorage.getItem('notes'))
 const notes = JSON.parse(localStorage.getItem('notes'))
- 
+
 // メモ帳追加処理を実行
 if(notes) {
   notes.forEach(note => addNewNote(note))
@@ -11,85 +12,110 @@ if(notes) {
 
 // 作成ボタンのクリックイベントの登録
 addBtn.addEventListener('click', () => addNewNote())
+
 //DOMにメモ帳を追加する
 function addNewNote(text = '') {
+  // div要素を作成
   const note = document.createElement('div');
+  // noteクラスを追加
   note.classList.add('note');
+  // メモ帳を追加
   note.innerHTML = `
     <div class="tools">
-      <button class="edit"><i class="fas fa-edit"></i></button>
-      <button class="delete"><i class="fas fa-trash-alt"></i></button>
+      <button id="save"><i class="fas fa-check-square"></i></button>
+      <button id="edit"><i class="fas fa-edit"></i></button>
+      <button id="delete"><i class="fas fa-trash-alt"></i></button>
+      <ul>
     </div>
-    <div class="main ${text ? "" : "hidden"}"></div>
-    <textarea class="${text ? "hidden" : ""}"></textarea>
+    <div class="main">
+      <input type="text" id="title" >
+      <textarea id="memo"></textarea>
+    </div>
   `
+  // bodyの子要素として追加
   document.body.appendChild(note)
 
-  // 操作に必要な要素を取得
-  const editBtn = note.querySelector('.edit')
-  const deleteBtn = note.querySelector('.delete')
-  const main = note.querySelector('.main')
-  const textArea = note.querySelector('textarea')
+  const saveBtn = note.querySelector('#save')
+  const deleteBtn = note.querySelector('#delete')
 
-  // 新規/編集があるのでこうしている
-  textArea.value = text
-  // // markedは、HTMLに追加したプラグイン
-  // main.innerHTML = marked(text)
+  // 保存のクリックイベントの登録
+  saveBtn.addEventListener('click', () => {
+    const key = $("#title").val();
+    const value = $("#memo").val();
+    localStorage.setItem(key,value);
+    const html = '<tr><th>'+key+'</th><td>'+value+'</td></tr>';
+    $("#list").append(html);
+  });
 
   // 削除のクリックイベントの登録
   deleteBtn.addEventListener('click', () => {
-    deleteNote(note)
-  })
-
-  // 編集ボタンのクリックイベント
-  editBtn.addEventListener('click', () => {
-    editNote(main, textArea)
-  })
-
-  // テキストエリアのイベント
-  textArea.addEventListener('input', (e) => {
-    const { value } = e.target
-
-    // main.innerHTML = marked(value)
-
-    // ローカルストレージの更新
+    note.remove()
     updateLS()
-})
-
-// bodyの子要素として追加
+  })
 
 }
 
-// メモ帳削除
-function deleteNote(note) {
-  // ノートを削除
-  note.remove()
-  // ローカルストレージの更新
-  updateLS()
-}
+
+
+
+// // 操作に必要な要素を取得
+// const saveBtn = note.querySelector('.save')
+// const editBtn = note.querySelector('.edit')
+// const deleteBtn = note.querySelector('.delete')
+// const title = note.querySelector('#title')
+// const contents = note.querySelector('#contents')
+
+// // ローカルストレージからデータを取得する
+// const notes = JSON.parse(localStorage.getItem('notes'))
  
-function updateLS() {
-  // 後で実装
-}
 
-// メモ帳編集
-function editNote(main, textArea) {
-  // hiddenがついているものは消し、ついてないものは付与する
-  main.classList.toggle('hidden')
-  textArea.classList.toggle('hidden')
-}
 
-// ローカルストレージにメモ帳を保存
-function updateLS() {
-  // 要素を取得
-  const notesText = document.querySelectorAll('textarea')
 
-  const notes = []
+//   // 新規/編集があるのでこうしている
+//   textArea.value = text
+//   // // markedは、HTMLに追加したプラグイン
+//   // main.innerHTML = marked(text)
 
-  // 要素を格納
-  notesText.forEach(note => notes.push(note.value))
+//   // 保存のクリックイベントの登録
+//   saveBtn.addEventListener('click', () => {
+//     note.updateLS()
+   
+//   })
 
-  // notesという名前でローカルストレージを保存
-  localStorage.setItem('notes', JSON.stringify(notes))
-}
+//   // 削除のクリックイベントの登録
+//   deleteBtn.addEventListener('click', () => {
+//     note.remove()
+//     updateLS()
+//   })
+ 
+//   // メモ帳編集
+//   editBtn.addEventListener('click', () => {
+//     main.classList.toggle('hidden')
+//     textArea.classList.toggle('hidden')
+//   })
+//   //   // テキストエリアのイベント
+//   // textArea.addEventListener('input', (e) => {
+//   //   const { value } = e.target
+
+//   //   // main.innerHTML = marked(value)
+
+//   //   // ローカルストレージの更新
+//   //   updateLS()
+//   // })
+
+
+
+// // ローカルストレージにメモ帳を保存
+// function updateLS() {
+//   // 要素を取得
+//   const notesText = document.querySelectorAll('textarea')
+
+//   const notes = []
+//   console.log (notesText)
+
+//   // 要素を格納
+//   notesText.forEach(note => notes.push(note.value))
+//   // notesという名前でローカルストレージを保存
+//   localStorage.setItem('notes', JSON.stringify(notes))
+// }
 
